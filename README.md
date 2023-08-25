@@ -1,153 +1,197 @@
-# Monty Interpreter
+Monty Interpreter
 
-Monty 0.98 is a scripting language that relies on a unique stack with specific instructions to manipulate it. This project aims to create an interpreter for Monty ByteCodes files.
+Welcome to the Monty Bytecode Interpreter. It reads Monty bytecode files of any extension and interprets the opcodes contained.
 
-## Usage
+Our interpreter can be run as either a stack (LIFO) or queue (FIFO). Mode can be switched mid-script. 
 
-To use the Monty Interpreter, follow these steps:
+## :running: Getting Started
 
-1. Clone the repository:
-   ```sh
-   git clone https://github.com/your-username/monty-interpreter.git
-   cd monty-interpreter
-## Compiling and Running
+* [Ubuntu 14.04 LTS](http://releases.ubuntu.com/14.04/) - Operating system reqd.
 
-### Compile the Code
+* [GCC 4.8.4](https://gcc.gnu.org/gcc-4.8/) - Compiler used
 
-Use the following command to compile the Monty interpreter code:
 
-```sh
+## :warning: Prerequisites
+
+* Must have `git` installed.
+
+* Must have repository cloned.
+
+```
+$ sudo apt-get install git
+```
+
+
+## :arrow_down: Installing and Using
+
+Clone the repository into a new directory:
+
+```
+$ git clone https://github.com/BennettDixon/monty.git
+```
+Compile with the following:
+
+```
 gcc -Wall -Werror -Wextra -pedantic *.c -o monty
 ```
 
-Files
-The project consists of the following files:
+Run the interpreter on a file:
 
-monty.h: Header file containing function prototypes and necessary includes.
-main.c: Main entry point of the interpreter. Handles file opening, line processing, and opcode execution.
-stack_ops.c: Contains functions for stack operations like push, pop, swap, etc.
-math_ops.c: Contains functions for mathematical operations like add, sub, mul, etc.
-cha
-r_ops.c: Contains functions for character-related operations like pchar, pstr.
-rotation_ops.c: Contains functions for stack rotation operations like rotl and rotr.
-format_ops.c: Contains functions for setting stack format modes like stack and queue.
-Implemented Opcodes
-Her
-e are examples and descriptions of some implemented opcodes in the Monty Interpreter:
-
-push: Pushes a value onto the stack.
+```
+./monty file.m
+```
 
 
-pu
-sh 42
-pop: Removes the top element from the stack.
+## :wrench: Monty Opcodes
+
+* **push**
+  * Usage: `push <int>`
+  * Pushes an element to the stack.
+  * The parameter `<int>` must be an integer.
+
+* **pall**
+  * Prints all values in the stack/queue, starting from the top.
+
+* **pint**
+  * Prints the top value of the stack/queue.
+
+* **pop**
+  * Removes the top element of the stack/queue.
+
+* **swap**
+  * Swaps the top two elements of the stack/queue.
+
+* **nop**
+  * Does not do anything.
+
+* **add**
+  * Adds the top two elements of the stack/queue.
+  * The result is stored in the second element from the top and the top element is popped.
+
+* **sub**
+  * Subtracts the top element of the stack/queue from the second element from the top.
+  * The result is stored in the second element from the top and the top element is removed.
+
+* **mul**
+  * Multiplies the top two elements of the stack/queue.
+  * The result is stored in the second element from the top and the top element is removed.
+
+* **div**
+  * Divides the second element from the top of the stack/queue by the top element.
+  * The result is stored in the second element from the top and the top element is removed.
+
+* **mod**
+  * Computes the modulus of the second element from the top of the stack/queue divided by the top element.
+  * The result is stored in the second element from the top and the top element is removed.
+
+* **pchar**
+  * Prints the character value of the top element of the stack/queue.
+  * The integer at the top is treated as an ASCII value.
+
+* **pstr**
+  * Prints the string contained in the stack/queue.
+  * Prints characters element by element until the stack/queue is empty, a value is `0`, or an error occurs.
+
+* **rotl**
+  * Rotates the top element of the stack/queue to the bottom.
+
+* **rotr**
+  * Rotates the bottom element of the stack/queue to the top.
+
+* **stack**
+  * Switches a queue to stack mode.
+
+* **queue**
+  * Switches a stack to queue mode.
+
+:arrow_forward: Opcodes preceeded by a `#` are treated as comments and the corresponding line is ignored.
+
+:arrow_forward: Lines can be empty and can contain any number of spaces before or after an opcode and its argument (only the first opcode and/or argument is taken into account).
 
 
-pop
-pal
-l: Prints all elements in the stack.
+## :clipboard: Examples
 
+Note, Monty Interpreter runs in the default mode of STACK mode. Meaning it uses a stack. To switch to queue mode, see examples below.
 
-push 10
-push 20
-pal
-l
-pint: Prints the value at the top of the stack.
+Push values onto the stack and print them all, or the top of the stack/front of queue.
 
-
-push 5
-pint
-swa
-p: Swaps the top two elements of the stack.
-
-
+```
+$ cat push_pall_pint.m
 push 1
 push 2
-swap
-add: Adds the top two elements of the stack.
-
-
 push 3
-pus
-h 4
-add
-nop: No operation (does nothing).
+pall
+pint
+$ ./monty push_pall_pint.m
+3
+2
+1
+3
+```
 
-wasm
-nop
-sub
-: Subtracts the top element from the second top element of the stack.
+Using mathmatical operations to add, multiply, divide, etc. Takes the second from the top and performs the operation on the top: `second_from_top / top`, `second_from_top - top`, `etc`. Then assigns that to the `second_from_top` and pops the top element off the stack.
 
-
-push 10
-push 5
-sub
-div
-: Divides the second top element by the top element of the stack.
-
-
-push 20
-push 4
-div
-mul: Multiplies the top two elements of the stack.
-
-
-p
-ush 6
-push 7
+```
+$ cat math.m
+push 3
+push 2
+push 1
+pall
 mul
-mod: Computes the remainder of the division of the second top element by the top element of the sta
-ck.
+pall
+$ ./monty math.m
+1
+2
+3
+1
+6
+```
 
+Entering queue mode to perform all operations in FIFO (queue) mode instead of default LIFO (stack) mode. Note: does not change current stack, sets front of queue to top of stack.
 
-push 15
-push 4
-mod
-
-pchar: Prints the character corresponding to the ascii value at the top of the stack.
-
-
-push 65
-pchar
-pstr: Prints the string starting at the top of the stack.
-
-
-push 72
-pus
-h 101
-push 108
-push 108
-push 111
-push 0
-pstr
-rotl: Rotates the stack to the top.
-
-
-p
-ush 1
+```
+$ cat queue.m
+queue
+push 1
 push 2
 push 3
-rotl
-rotr: Rotates the stack to the bottom.
-
-
+pall
+stack
 push 4
 push 5
 push 6
-rotr
-stack: Sets the format to stack mode (LIFO).
+pall
+$ ./monty queue.m
+1
+2
+3
+6
+5
+4
+1
+2
+3
+```
 
-stack
-queue: Sets the format to queue mode (FIFO).
+## :books: Coding Style Tests
 
-queue
-Contributing
-Contributions are welcome! If you'd like to contribute to the Monty Interpreter, feel free to fork this repository and submit a pull request with your changes.
+Strictly followed `Betty` style guide. To install
 
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+```
+$ git clone https://github.com/holbertonschool/Betty.git
 
-Contact
-For any inquiries or suggestions, feel free to reach out to us at your-email@example.com.
+$ cd Betty; ./install.sh
+```
 
-Happy coding! :rocket:
+
+## :blue_book: Authors
+
+* **Noel Osiro** - [@bdbaraban](https://github.com/Noel Osiro)
+
+
+## :mag: License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+
+
